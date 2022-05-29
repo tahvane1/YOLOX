@@ -101,7 +101,7 @@ class COCODataset(Dataset):
             )
             self.imgs = np.memmap(
                 cache_file,
-                shape=(len(self.ids), max_h, max_w, 3),
+                shape=(len(self.ids), max_h, max_w),
                 dtype=np.uint8,
                 mode="w+",
             )
@@ -115,7 +115,7 @@ class COCODataset(Dataset):
             )
             pbar = tqdm(enumerate(loaded_images), total=len(self.annotations))
             for k, out in pbar:
-                self.imgs[k][: out.shape[0], : out.shape[1], :] = out.copy()
+                self.imgs[k][: out.shape[0], : out.shape[1]] = out.copy()
             self.imgs.flush()
             pbar.close()
         else:
@@ -128,7 +128,7 @@ class COCODataset(Dataset):
         logger.info("Loading cached imgs...")
         self.imgs = np.memmap(
             cache_file,
-            shape=(len(self.ids), max_h, max_w, 3),
+            shape=(len(self.ids), max_h, max_w),
             dtype=np.uint8,
             mode="r+",
         )
@@ -201,7 +201,7 @@ class COCODataset(Dataset):
         res, img_info, resized_info, _ = self.annotations[index]
         if self.imgs is not None:
             pad_img = self.imgs[index]
-            img = pad_img[: resized_info[0], : resized_info[1], :].copy()
+            img = pad_img[: resized_info[0], : resized_info[1]].copy()
         else:
             img = self.load_resized_img(index)
 

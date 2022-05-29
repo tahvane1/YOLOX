@@ -140,6 +140,7 @@ def _mirror(image, boxes, prob=0.5):
 
 
 def preproc(img, input_size, swap=(2, 0, 1)):
+    
     if len(img.shape) == 3:
         padded_img = np.ones((input_size[0], input_size[1], 3), dtype=np.uint8) * 114
     else:
