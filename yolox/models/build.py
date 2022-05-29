@@ -29,7 +29,7 @@ _CKPT_FULL_PATH = {
 
 
 def create_yolox_model(
-    name: str, pretrained: bool = True, num_classes: int = 80, device=None
+    name: str, pretrained: bool = True,   backbone_in_channels: int = 3,num_classes: int = 80, device=None
 ) -> nn.Module:
     """creates and loads a YOLOX model
 
@@ -50,9 +50,10 @@ def create_yolox_model(
 
     assert name in _CKPT_FULL_PATH, f"user should use one of value in {_CKPT_FULL_PATH.keys()}"
     exp: Exp = get_exp(exp_name=name)
+    exp.backbone_in_channels = backbone_in_channels
     exp.num_classes = num_classes
     yolox_model = exp.get_model()
-    if pretrained and num_classes == 80:
+    if pretrained and backbone_in_channels == 3 and num_classes == 80:
         weights_url = _CKPT_FULL_PATH[name]
         ckpt = load_state_dict_from_url(weights_url, map_location="cpu")
         if "model" in ckpt:

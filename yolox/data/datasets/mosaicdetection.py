@@ -97,9 +97,9 @@ class MosaicDetection(Dataset):
                     img, (int(w0 * scale), int(h0 * scale)), interpolation=cv2.INTER_LINEAR
                 )
                 # generate output mosaic image
-                (h, w, c) = img.shape[:3]
+                (h, w) = img.shape[:2]
                 if i_mosaic == 0:
-                    mosaic_img = np.full((input_h * 2, input_w * 2, c), 114, dtype=np.uint8)
+                    mosaic_img = np.full((input_h * 2, input_w * 2), 114, dtype=np.uint8)
 
                 # suffix l means large image, while s means small image in mosaic aug.
                 (l_x1, l_y1, l_x2, l_y2), (s_x1, s_y1, s_x2, s_y2) = get_mosaic_coordinate(
@@ -169,7 +169,7 @@ class MosaicDetection(Dataset):
         img, cp_labels, _, _ = self._dataset.pull_item(cp_index)
 
         if len(img.shape) == 3:
-            cp_img = np.ones((input_dim[0], input_dim[1], 3), dtype=np.uint8) * 114
+            cp_img = np.ones((input_dim[0], input_dim[1], 1), dtype=np.uint8) * 114
         else:
             cp_img = np.ones(input_dim, dtype=np.uint8) * 114
 

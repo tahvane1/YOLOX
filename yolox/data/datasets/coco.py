@@ -190,7 +190,7 @@ class COCODataset(Dataset):
 
         img_file = os.path.join(self.data_dir, self.name, file_name)
 
-        img = cv2.imread(img_file)
+        img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
         assert img is not None, f"file named {img_file} not found"
 
         return img

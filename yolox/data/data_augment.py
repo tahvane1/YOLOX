@@ -132,7 +132,7 @@ def random_affine(
 
 
 def _mirror(image, boxes, prob=0.5):
-    _, width, _ = image.shape
+    _, width = image.shape[:2]
     if random.random() < prob:
         image = image[:, ::-1]
         boxes[:, 0::2] = width - boxes[:, 2::-2]
@@ -153,7 +153,10 @@ def preproc(img, input_size, swap=(2, 0, 1)):
     ).astype(np.uint8)
     padded_img[: int(img.shape[0] * r), : int(img.shape[1] * r)] = resized_img
 
-    padded_img = padded_img.transpose(swap)
+    if len(img.shape) == 3:
+        padded_img = padded_img.transpose(swap)
+    else:
+        padded_img = np.expand_dims(img,axis=0)
     padded_img = np.ascontiguousarray(padded_img, dtype=np.float32)
     return padded_img, r
 
@@ -174,7 +177,7 @@ class TrainTransform:
 
         image_o = image.copy()
         targets_o = targets.copy()
-        height_o, width_o, _ = image_o.shape
+        height_o, width_o = image_o.shape[:2]
         boxes_o = targets_o[:, :4]
         labels_o = targets_o[:, 4]
         # bbox_o: [xyxy] to [c_x,c_y,w,h]
@@ -183,7 +186,7 @@ class TrainTransform:
         if random.random() < self.hsv_prob:
             augment_hsv(image)
         image_t, boxes = _mirror(image, boxes, self.flip_prob)
-        height, width, _ = image_t.shape
+        height, width= image_t.shape[:2]
         image_t, r_ = preproc(image_t, input_dim)
         # boxes [xyxy] 2 [cx,cy,w,h]
         boxes = xyxy2cxcywh(boxes)
